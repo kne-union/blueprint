@@ -8,7 +8,13 @@
     "test": "craco test"
   },
   "dependencies": {
-    "@kne/example-driver": "^0.1.0"
+    "@kne/blueprint": "file:..",
+    "@kne/example-driver": "^0.1.0",
+    "lodash": "^4.17.21",
+    "@kne/remote-loader": "file:../node_modules/@kne/remote-loader",
+    "react": "file:../node_modules/react",
+    "react-dom": "file:../node_modules/react-dom",
+    "react-router-dom": "file:../node_modules/react-router-dom"
   },
   "eslintConfig": {
     "extends": "react-app"
@@ -25,6 +31,10 @@
     "chokidar": "^3.5.3",
     "cross-spawn-promise": "^0.10.2",
     "fs-extra": "^10.1.0",
+    "node-sass": "^9.0.0",
     "react-scripts": "^5.0.1"
+  },
+  "syntax": {
+    "esmodules": true
   }
 }

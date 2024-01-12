@@ -4,6 +4,8 @@ const {parse} = require('@kne/md-doc');
 const get = require('lodash/get');
 const uniqueId = require('lodash/uniqueId');
 const spawn = require('cross-spawn-promise');
+const CracoModuleFederation = require("@kne/craco-module-federation");
+const middleware = require("@kne/blueprint/server/middleware");
 
 const createJsTemplate = async (readme) => {
     const list = get(readme, 'example.list') || [];
@@ -89,6 +91,10 @@ const ReadmePlugin = {
                 await fs.writeFile('./src/readme.js', output);
             });
         };
+
+        devServerConfig.onBeforeSetupMiddleware = (devServer)=>{
+            middleware(devServer.app);
+        };
         devServerConfig.watchFiles = ['./src/readme.js'];
         return devServerConfig;
     }
@@ -98,6 +104,8 @@ module.exports = {
     plugins: [
         {
             plugin: ReadmePlugin
+        }, {
+            plugin: CracoModuleFederation
         }
     ]
 };

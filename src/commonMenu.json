@@ -1,0 +1,26 @@
+[
+  {
+    "label": "蓝图",
+    "path": "/"
+  },
+  {
+    "label": "模块",
+    "path": "/modules"
+  },
+  {
+    "label": "页面",
+    "path": "/pages"
+  },
+  {
+    "label": "动作",
+    "path": "/actions"
+  },
+  {
+    "label": "元素",
+    "path": "/elements"
+  },
+  {
+    "label": "模型",
+    "path": "/model"
+  }
+]

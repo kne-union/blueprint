@@ -3,6 +3,10 @@ import ExampleDriver from '@kne/example-driver';
 import readme from './readme';
 import get from "lodash/get";
 import last from "lodash/last";
+import {HashRouter} from "react-router-dom";
+const ContextComponent = ({children})=>{
+    return <HashRouter>{children}</HashRouter>
+};
 
 const App = () => {
     const exampleStyle = get(readme, 'example.style');
@@ -29,8 +33,7 @@ const App = () => {
         <div className="mark-down-html" dangerouslySetInnerHTML={{__html: readme.summary}}/>
         <h2>代码示例</h2>
         <div className={get(readme, 'example.className')}>
-            <ExampleDriver isFull={get(readme, 'example.isFull')}
-                           list={get(readme, 'example.list') || []}/>
+            <ExampleDriver isFull={get(readme, 'example.isFull')} list={get(readme, 'example.list') || []} contextComponent={ContextComponent}/>
         </div>
         <h2>API</h2>
         <div className="mark-down-html" dangerouslySetInnerHTML={{__html: readme.api}}></div>
