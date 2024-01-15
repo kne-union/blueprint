@@ -31,7 +31,7 @@ const BaseExample = createWithRemoteLoader({
 })(({remoteModules}) => {
     const [Global, Layout] = remoteModules;
     return <Global>
-        <Layout navigation={null}>
+        <Layout>
             <BluePrint />
         </Layout>
     </Global>;

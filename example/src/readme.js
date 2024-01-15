@@ -1,5 +1,5 @@
-import * as component_1 from '@kne/blueprint';
-import * as component_2 from '@kne/remote-loader';
+import * as component_3 from '@kne/blueprint';
+import * as component_4 from '@kne/remote-loader';
 const readmeConfig = {
     name: `@kne/blueprint`,
     description: ``,
@@ -29,7 +29,7 @@ const BaseExample = createWithRemoteLoader({
 })(({remoteModules}) => {
     const [Global, Layout] = remoteModules;
     return <Global>
-        <Layout navigation={null}>
+        <Layout>
             <BluePrint />
         </Layout>
     </Global>;
@@ -41,11 +41,11 @@ render(<BaseExample/>);
     scope: [{
     name: "blueprint",
     packageName: "@kne/blueprint",
-    component: component_1
+    component: component_3
 },{
     name: "removeLoader",
     packageName: "@kne/remote-loader",
-    component: component_2
+    component: component_4
 }]
 }]
     }

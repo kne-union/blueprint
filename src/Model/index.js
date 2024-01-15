@@ -4,11 +4,12 @@ import commonMenu from '../commonMenu.json';
 import getColumns from "./getColumns";
 import {App, Button} from 'antd';
 import BasicFormInner from './BasicFormInner';
+import get from 'lodash/get';
 
 const Model = createWithRemoteLoader({
-    modules: ['Layout@TablePage', 'Global@usePreset', 'Menu', 'FormInfo@useFormModal', 'Modal@useModal', 'InfoPage']
+    modules: ['Layout@TablePage', 'Global@usePreset', 'Menu', 'FormInfo@useFormModal', 'Modal@useModal', 'InfoPage', 'Descriptions']
 })(({remoteModules}) => {
-    const [TablePage, usePreset, Menu, useFormModal, useModal, InfoPage] = remoteModules;
+    const [TablePage, usePreset, Menu, useFormModal, useModal, InfoPage, Descriptions] = remoteModules;
     const {ajax, apis} = usePreset();
     const {message} = App.useApp();
     const formModal = useFormModal();
@@ -16,11 +17,39 @@ const Model = createWithRemoteLoader({
     const ref = useRef();
 
     return <TablePage ref={ref} name="model" {...Object.assign({}, apis.model.getList)} columns={[...getColumns({
-        showDetail: () => {
+        showDetail: ({colItem}) => {
             modal({
                 title: '模型详情', children: <InfoPage>
-                    <InfoPage.Part title="基本信息">基本信息基本信息基本信息基本信息</InfoPage.Part>
-                    <InfoPage.Part title="字段信息">基本信息基本信息基本信息基本信息基本信息</InfoPage.Part>
+                    <InfoPage.Part title="基本信息">
+                        <Descriptions dataSource={[[{label: "编号", content: colItem['id']}], [{
+                            label: "名称", content: colItem['name']
+                        }, {
+                            label: "显示名称", content: colItem['label']
+                        }], [{label: '所属库', content: get(colItem['Lib'], 'label', '')}, {
+                            label: '状态', content: !colItem.disabledAt ? '启用' : '禁用'
+                        }], [{label: '描述', content: colItem['description']}]]}/>
+                    </InfoPage.Part>
+                    <InfoPage.Part title="字段信息">
+                        {get(colItem, 'fields').map(({name, label, type, isPrimaryKey}) => {
+                            return <InfoPage.Part title={label} key={name}>
+                                <Descriptions dataSource={[[{label: '字段名称', content: name}, {
+                                    label: '字段显示名称', content: label
+                                }], [{label: '类型', content: type}, {
+                                    label: '是否主键', content: isPrimaryKey ? '是' : '否'
+                                }]]}/>
+                            </InfoPage.Part>
+                        })}
+                    </InfoPage.Part>
+                </InfoPage>, footer: null
+            });
+        }, showLibDetail: ({colItem}) => {
+            modal({
+                title: '所属库详情', children: <InfoPage>
+                    <Descriptions dataSource={[[{label: "编号", content: get(colItem['Lib'], 'id')}], [{
+                        label: "名称", content: get(colItem['Lib'], 'name')
+                    }, {
+                        label: "显示名称", content: get(colItem['Lib'], 'label')
+                    }], [{label: '描述', content: get(colItem['Lib'], 'description')}]]}/>
                 </InfoPage>, footer: null
             });
         }

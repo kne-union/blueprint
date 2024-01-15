@@ -4,7 +4,9 @@ import readme from './readme';
 import get from "lodash/get";
 import last from "lodash/last";
 import {HashRouter} from "react-router-dom";
-const ContextComponent = ({children})=>{
+import './app.css';
+
+const ContextComponent = ({children}) => {
     return <HashRouter>{children}</HashRouter>
 };
 
@@ -22,22 +24,8 @@ const App = () => {
         };
     }, [exampleStyle]);
 
-    return <div>
-        <h1>{last(readme.name.split('/'))}</h1>
-        <div>{readme.description}</div>
-        <h2>安装</h2>
-        <div>
-            <pre><code>npm install --save {readme.name}</code></pre>
-        </div>
-        <h2>概述</h2>
-        <div className="mark-down-html" dangerouslySetInnerHTML={{__html: readme.summary}}/>
-        <h2>代码示例</h2>
-        <div className={get(readme, 'example.className')}>
-            <ExampleDriver isFull={get(readme, 'example.isFull')} list={get(readme, 'example.list') || []} contextComponent={ContextComponent}/>
-        </div>
-        <h2>API</h2>
-        <div className="mark-down-html" dangerouslySetInnerHTML={{__html: readme.api}}></div>
-    </div>
+    return <ExampleDriver isFull={get(readme, 'example.isFull')} list={get(readme, 'example.list') || []}
+                          contextComponent={ContextComponent}/>
 };
 
 export default App;
