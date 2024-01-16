@@ -1,5 +1,5 @@
-import * as component_3 from '@kne/blueprint';
-import * as component_4 from '@kne/remote-loader';
+import * as component_1 from '@kne/blueprint';
+import * as component_2 from '@kne/remote-loader';
 const readmeConfig = {
     name: `@kne/blueprint`,
     description: ``,
@@ -41,11 +41,11 @@ render(<BaseExample/>);
     scope: [{
     name: "blueprint",
     packageName: "@kne/blueprint",
-    component: component_3
+    component: component_1
 },{
     name: "removeLoader",
     packageName: "@kne/remote-loader",
-    component: component_4
+    component: component_2
 }]
 }]
     }
