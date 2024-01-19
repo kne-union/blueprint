@@ -10,8 +10,8 @@
   "dependencies": {
     "@kne/blueprint": "file:..",
     "@kne/example-driver": "^0.1.0",
-    "lodash": "^4.17.21",
     "@kne/remote-loader": "file:../node_modules/@kne/remote-loader",
+    "lodash": "^4.17.21",
     "react": "file:../node_modules/react",
     "react-dom": "file:../node_modules/react-dom",
     "react-router-dom": "file:../node_modules/react-router-dom"

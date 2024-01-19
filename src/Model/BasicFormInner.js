@@ -64,6 +64,8 @@ const BasicFormInner = createWithRemoteLoader({
               }}</Enum>, <Input name="name" label="字段名" rule="REQ"/>,
                   <Input name="label" label="字段显示名称" rule="REQ"/>,
                   <RadioGroup name="isPrimaryKey" label="是否主键"
+                              options={[{label: '是', value: true}, {label: '否', value: false}]}/>,
+                  <RadioGroup name="isArray" label="是否为列表"
                               options={[{label: '是', value: true}, {label: '否', value: false}]}/>]}/>
     </>
 });

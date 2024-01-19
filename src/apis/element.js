@@ -1,15 +1,27 @@
 const getList = {
-    url: '/blueprint-api/blueprints/list', method: 'GET'
+    url: '/blueprint-api/elements/list', method: 'GET'
 };
 
-const getDetail = {};
+const doDelete = {
+    url: '/blueprint-api/elements/delete', method: 'POST'
+};
 
-const doDelete = {};
+const doRestore = {
+    url: '/blueprint-api/elements/restore', method: 'POST'
+};
 
-const doEdit = {};
+const doEdit = {
+    url: '/blueprint-api/elements/edit', method: 'POST'
+};
 
-const doAdd = {};
+const doAdd = {
+    url: '/blueprint-api/elements/add', method: 'POST'
+};
 
-const apis = {doAdd, doEdit, doDelete, getDetail, getList};
+const getDetail = {
+    url: '/blueprint-api/elements/get', method: 'GET'
+};
+
+const apis = {doAdd, doEdit, doDelete, doRestore, getDetail, getList};
 
 export default apis;

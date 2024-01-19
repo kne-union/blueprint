@@ -2,7 +2,6 @@ import {useEffect} from 'react';
 import ExampleDriver from '@kne/example-driver';
 import readme from './readme';
 import get from "lodash/get";
-import last from "lodash/last";
 import {HashRouter} from "react-router-dom";
 import './app.css';
 

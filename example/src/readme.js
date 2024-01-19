@@ -21,16 +21,16 @@ const readmeConfig = {
         list: [{
     title: `这里填写示例标题`,
     description: `这里填写示例说明`,
-    code: `const {default: BluePrint} = blueprint;
+    code: `const {default: BluePrint, globalPreset} = blueprint;
 const {createWithRemoteLoader} = removeLoader;
 
 const BaseExample = createWithRemoteLoader({
     modules: ['Global@PureGlobal', 'Layout']
 })(({remoteModules}) => {
     const [Global, Layout] = remoteModules;
-    return <Global>
+    return <Global preset={globalPreset}>
         <Layout>
-            <BluePrint />
+            <BluePrint/>
         </Layout>
     </Global>;
 });

@@ -23,16 +23,16 @@ npm i --save @kne/blueprint
 - blueprint(@kne/blueprint),removeLoader(@kne/remote-loader)
 
 ```jsx
-const {default: BluePrint} = blueprint;
+const {default: BluePrint, globalPreset} = blueprint;
 const {createWithRemoteLoader} = removeLoader;
 
 const BaseExample = createWithRemoteLoader({
     modules: ['Global@PureGlobal', 'Layout']
 })(({remoteModules}) => {
     const [Global, Layout] = remoteModules;
-    return <Global>
+    return <Global preset={globalPreset}>
         <Layout>
-            <BluePrint />
+            <BluePrint/>
         </Layout>
     </Global>;
 });
