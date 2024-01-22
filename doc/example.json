@@ -11,6 +11,9 @@
           "packageName": "@kne/blueprint"
         },
         {
+          "packageName": "@kne/blueprint/dist/index.css"
+        },
+        {
           "name": "removeLoader",
           "packageName": "@kne/remote-loader"
         }

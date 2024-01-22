@@ -16,6 +16,10 @@ const SubElementFormInner = createWithRemoteLoader({
                          <AdvancedSelect name="type" label="元素类型" rule="REQ" single
                                          pagination={{paramsType: 'params'}}
                                          api={Object.assign({}, apis.element.getList, {
+                                             params: {
+                                                 disabled: 'open'
+                                             }
+                                         }, {
                                              transformData: (data) => {
                                                  return Object.assign({}, data, {
                                                      pageData: data.pageData.map(({id, label, dependencies}) => ({

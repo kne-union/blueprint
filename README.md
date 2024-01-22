@@ -20,7 +20,7 @@ npm i --save @kne/blueprint
 
 - 这里填写示例标题
 - 这里填写示例说明
-- blueprint(@kne/blueprint),removeLoader(@kne/remote-loader)
+- blueprint(@kne/blueprint),(@kne/blueprint/dist/index.css),removeLoader(@kne/remote-loader)
 
 ```jsx
 const {default: BluePrint, globalPreset} = blueprint;

@@ -25,7 +25,6 @@ const list = async (req, res) => {
             }
         }
     });
-    console.log('>>>>>>', list);
     return res.json({code: 0, data: list, msg: 'success'});
 };
 

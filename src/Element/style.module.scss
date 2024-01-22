@@ -1,0 +1,30 @@
+.item-box {
+  border-radius: 8px;
+  transition: border-color 300ms;
+
+  &:hover {
+    border-color: var(--primary-color);
+
+    > :global(.ant-card-head) {
+      background: var(--primary-color);
+      color: #ffffff;
+    }
+  }
+
+  > :global(.ant-card-head) {
+    border-radius: 8px 8px 0 0;
+    background: var(--bg-color-grey-3);
+    transition: background-color 300ms, color 300ms;
+  }
+
+  :global {
+    .descriptions-col-label, .descriptions-col-content {
+      text-align: left;
+      white-space: nowrap;
+    }
+  }
+}
+
+.chart {
+  --tree-line-color: var(--bg-color-grey-3);
+}

@@ -68,20 +68,24 @@
     "cross-env": "^7.0.3",
     "gh-pages": "^3.2.3",
     "husky": "^7.0.4",
+    "node-sass": "^7.0.3",
     "npm-run-all": "^4.1.5",
     "prettier": "^2.8.8",
     "react-scripts": "5.0.1"
   },
   "dependencies": {
     "@kne/react-fetch": "^1.4.2",
+    "@kne/react-org-chart": "^0.1.4",
     "@kne/remote-loader": "^1.1.0",
     "antd": "^5.12.8",
     "axios": "^1.6.5",
     "body-parser": "^1.20.2",
     "express": "^4.18.2",
+    "express-async-errors": "^3.1.1",
     "react-router-dom": "^6.21.1",
     "sequelize": "^6.35.2",
     "sqlite3": "^5.1.7",
+    "statuses": "^2.0.1",
     "uuid": "^9.0.1"
   }
 }

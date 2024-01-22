@@ -2,23 +2,28 @@ import React, {useRef, useState} from 'react';
 import {createWithRemoteLoader} from '@kne/remote-loader';
 import commonMenu from '../commonMenu.json';
 import getColumns from "./getColumns";
-import {Button, App, Space} from "antd";
+import {Button, App, Space, Card} from "antd";
 import BasicFormInner from "./BasicFormInner";
 import ArgsFormInner from "../ArgsFormInner";
 import ApiModelTransformFormInner from "../ApiModelTransformFormInner";
 import SubElementFormInner from './SubElementFormInner';
 import get from "lodash/get";
 import Fetch from '@kne/react-fetch';
+import OrgChart from '@kne/react-org-chart';
+import style from './style.module.scss';
+import '@kne/react-org-chart/dist/index.css';
 
 const Module = createWithRemoteLoader({
-    modules: ['Layout@TablePage', 'Global@usePreset', 'Menu', 'FormInfo@useFormModal', 'Modal@useModal', 'InfoPage', 'Descriptions', 'Content', 'Table', 'Filter@fields', 'Filter@getFilterValue', 'Common@SearchInput']
+    modules: ['Layout@TablePage', 'Global@usePreset', 'Menu', 'FormInfo@useFormModal', 'Modal@useModal', 'InfoPage', 'Descriptions', 'Content', 'Table', 'Filter@fields', 'Filter@getFilterValue', 'Common@SearchInput', 'FormInfo', 'FormInfo@formModule']
 })(({remoteModules}) => {
-    const [TablePage, usePreset, Menu, useFormModal, useModal, InfoPage, Descriptions, Content, Table, filterFields, getFilterValue, SearchInput] = remoteModules;
+    const [TablePage, usePreset, Menu, useFormModal, useModal, InfoPage, Descriptions, Content, Table, filterFields, getFilterValue, SearchInput, FormInfo, formModule] = remoteModules;
     const ref = useRef();
     const {apis, ajax} = usePreset();
     const formModal = useFormModal();
     const modal = useModal();
     const [keyword, setKeyword] = useState('');
+
+    const {Input} = formModule;
 
     const showDetail = ({colItem}) => {
         modal({
@@ -111,7 +116,73 @@ const Module = createWithRemoteLoader({
         showDetail
     }), {
         name: "options", title: "操作", type: "options", fixed: "right", valueOf: (item) => [{
-            children: '生成', disabled: !!item.disabledAt
+            children: '生成', disabled: !!item.disabledAt, onClick: () => {
+                formModal({
+                    title: '元素生成', size: 'large', formProps: {
+                        onSubmit: (data) => {
+                            console.log(data);
+                        }
+                    }, children: <Fetch {...Object.assign({}, apis.element.getDetail, {
+                        params: {id: item.id}
+                    })} render={({data}) => {
+                        const dependenciesMap = new Map((data.dependencies || []).map((item) => [item.id, item]));
+
+                        const render = (nodeList) => {
+                            if (!(nodeList && nodeList.length > 0)) {
+                                return null;
+                            }
+                            return nodeList.map(({name, args, type}) => {
+                                const data = dependenciesMap.get(type);
+
+                                const needArgs = (data.args || []).filter((item) => !get(args, item.name));
+                                return <OrgChart.Node key={name}
+                                                      label={<Card className={style['item-box']} title={<Space>
+                                                          {data['label']}{data['id']}</Space>} hoverable size="small"
+                                                                   onClick={() => {
+                                                                       showDetail({colItem: data});
+                                                                   }}>
+                                                          <Space direction="vertical"
+                                                                 onClick={(e) => e.stopPropagation()}>
+                                                              {args && <Content list={Object.keys(args).map((key) => {
+                                                                  return {
+                                                                      label: key, content: args[key]
+                                                                  };
+                                                              })}/>}
+                                                              {needArgs.length > 0 && <FormInfo title="所需参数"
+                                                                                                list={needArgs.map((item) =>
+                                                                                                    <Input block
+                                                                                                           name={`args.${name}.${item.name}`}
+                                                                                                           label={item.label}
+                                                                                                           rule={item.required === true ? "REQ" : ""}/>)}/>}
+                                                          </Space>
+                                                      </Card>}>{render(data.subElements)}</OrgChart.Node>
+                            });
+                        };
+
+                        return <OrgChart className={style['chart']}
+                                         label={<Card className={style['item-box']} title={<Space>
+                                             {data['label']}{data['id']}</Space>} hoverable size="small"
+                                                      onClick={() => {
+                                                          showDetail({colItem: data});
+                                                      }}>
+                                             <Space direction="vertical" onClick={(e) => e.stopPropagation()}>
+                                                 <Descriptions
+                                                     dataSource={[[{label: '模板地址', content: data['address']}], [{
+                                                         label: '描述', content: data['description']
+                                                     }]]}/>
+                                                 {data.args && data.args.length > 0 && <FormInfo title="所需参数"
+                                                                                                 list={data.args.map((item) =>
+                                                                                                     <Input block
+                                                                                                            name={`args.${data.name}.${item.name}`}
+                                                                                                            label={item.label}
+                                                                                                            rule={item.required === true ? "REQ" : ""}/>)}/>}
+                                             </Space>
+                                         </Card>}>
+                            {render(data.subElements)}
+                        </OrgChart>
+                    }}/>
+                });
+            }
         }, {
             children: item.disabledAt ? '启用' : '禁用', onClick: async () => {
                 const {data: resData} = await ajax(Object.assign({}, item.disabledAt ? apis.element.doRestore : apis.element.doDelete, {

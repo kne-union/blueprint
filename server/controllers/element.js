@@ -1,25 +1,9 @@
 const {v4: uuidv4} = require('uuid');
 const {Op} = require('sequelize');
 const groupBy = require('lodash/groupBy');
+
 const add = async (req, res) => {
     const {name, label, address, description, subElements, args, apis} = Object.assign({}, req.body);
-
-    const elements = await req.models.Element.findAll({
-        include: req.models.ElementDependencies, where: {
-            id: {
-                [Op.in]: (subElements || []).map(({type}) => type)
-            }
-        }
-    });
-
-    const dependencies = new Set();
-
-    elements.forEach((item) => {
-        dependencies.add(item.id);
-        item.ElementDependencies.forEach(({dependenceId}) => {
-            dependencies.add(dependenceId);
-        });
-    });
 
     const id = uuidv4();
 
@@ -27,31 +11,16 @@ const add = async (req, res) => {
         id, name, label, address, description, args, subElements, apis
     });
 
-    await req.models.ElementDependencies.bulkCreate(Array.from(dependencies).map((dependenceId) => ({
-        elementId: id, dependenceId
-    })));
+    await req.services.element.uploadDependencies({id, subElements});
 
     return res.json({code: 0, data: newModel, msg: 'success'});
 };
 
 const get = async (req, res) => {
     const {id} = Object.assign({}, req.query);
-    const currentModel = await req.models.Element.findByPk(id);
-    if (!currentModel) {
-        return res.json({
-            code: 500, msg: '数据不存在'
-        });
-    }
-
-    const dependencies = await req.models.ElementDependencies.findAll({
-        include: [req.models.Element], where: {
-            elementId: id
-        }
-    });
 
     return res.json({
-        code: 0,
-        data: Object.assign({}, currentModel.get({plain: true}), {dependencies: dependencies.map(({Element}) => Element)})
+        code: 0, data: await req.services.element.getDetail(id)
     });
 };
 
@@ -168,33 +137,8 @@ const edit = async (req, res) => {
     });
 
     //修改所有依赖它的element的依赖项
-    const elements = await req.models.Element.findAll({
-        include: req.models.ElementDependencies, where: {
-            id: {
-                [Op.in]: (others.subElements || []).map(({type}) => type)
-            }
-        }
-    });
 
-    const dependencies = new Set();
-
-    elements.forEach((item) => {
-        dependencies.add(item.id);
-        item.ElementDependencies.forEach(({dependenceId}) => {
-            dependencies.add(dependenceId);
-        });
-    });
-
-    await req.models.ElementDependencies.destroy({
-        where: {
-            elementId: id
-        }
-    });
-
-    await req.models.ElementDependencies.bulkCreate(Array.from(dependencies).map((dependenceId) => ({
-        elementId: id, dependenceId
-    })));
-
+    await req.services.element.uploadDependencies({id, subElements: others.subElements});
 
     return res.json({code: 0, msg: 'success'});
 };
@@ -241,7 +185,13 @@ const restore = async (req, res) => {
     return res.json({code: 0, msg: 'success'});
 };
 
+const generate = async (req, res) => {
+    const {id, args} = Object.assign({}, req.body);
+    await req.services.element.generate({id, args});
+    return res.json({code: 0, msg: 'success'});
+};
+
 
 module.exports = {
-    add, get, list, edit, del, restore
+    add, get, list, edit, del, restore, generate
 };
