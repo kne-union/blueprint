@@ -27,5 +27,6 @@ apis.post('/elements/add', element.add);
 apis.post('/elements/edit', element.edit);
 apis.post('/elements/delete', element.del);
 apis.post('/elements/restore', element.restore);
+apis.post('/elements/generate', element.generate);
 
 module.exports = apis;

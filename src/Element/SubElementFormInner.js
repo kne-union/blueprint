@@ -9,7 +9,7 @@ const SubElementFormInner = createWithRemoteLoader({
     const [List, formModule, usePreset] = remoteModules;
     const {Input, AdvancedSelect} = formModule;
     const {apis} = usePreset();
-    return <List title="子元素" column={1} name="subElements"
+    return <List title="子元素" column={1} name="subElements" defaultLength={0}
                  list={(key, {index}, {formData}) => {
                      const currentValue = get(formData, `subElements[${index}]`, {});
                      return [<Input name="name" label="名称" rule="REQ"/>,

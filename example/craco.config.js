@@ -6,6 +6,7 @@ const uniqueId = require('lodash/uniqueId');
 const spawn = require('cross-spawn-promise');
 const CracoModuleFederation = require("@kne/craco-module-federation");
 const middleware = require("@kne/blueprint/server/middleware");
+const path = require("path");
 
 const createJsTemplate = async (readme) => {
     const list = get(readme, 'example.list') || [];
@@ -39,7 +40,7 @@ const createJsTemplate = async (readme) => {
         }
         if (!await fs.exists(`./node_modules/${packageName}`)) {
             console.log(`>>>>>开始自动安装包${packageName}>>>>>>`);
-            await spawn('npm', ['i', packageName, '--save','--legacy-peer-deps'], {stdio: 'inherit'}).then(() => {
+            await spawn('npm', ['i', packageName, '--save', '--legacy-peer-deps'], {stdio: 'inherit'}).then(() => {
                 console.log(`<<<<<<<<<<包${packageName}安装完成<<<<<<<<`);
             }, (e) => {
                 console.log(e);
@@ -85,15 +86,18 @@ const ReadmePlugin = {
                 const packageJson = await fs.readJson('../package.json');
                 const text = await fs.readFile('../README.md', 'utf8');
                 const output = await createJsTemplate(Object.assign({}, parse(text), {
-                    name: packageJson.name,
-                    description: packageJson.description || ''
+                    name: packageJson.name, description: packageJson.description || ''
                 }));
                 await fs.writeFile('./src/readme.js', output);
             });
         };
 
-        devServerConfig.onBeforeSetupMiddleware = (devServer)=>{
-            middleware(devServer.app);
+        devServerConfig.onBeforeSetupMiddleware = (devServer) => {
+            middleware(devServer.app, {
+                outputFiles: async (dir, to) => {
+                    await fs.copy(dir, `./src/blueprint/${to}`);
+                }
+            });
         };
         devServerConfig.watchFiles = ['./src/readme.js'];
         return devServerConfig;
@@ -101,11 +105,13 @@ const ReadmePlugin = {
 };
 
 module.exports = {
-    plugins: [
-        {
-            plugin: ReadmePlugin
-        }, {
-            plugin: CracoModuleFederation
+    webpack: {
+        alias: {
+            '@blueprint': path.resolve("./src/blueprint")
         }
-    ]
+    }, plugins: [{
+        plugin: ReadmePlugin
+    }, {
+        plugin: CracoModuleFederation
+    }]
 };

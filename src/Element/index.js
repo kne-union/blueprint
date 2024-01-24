@@ -117,10 +117,17 @@ const Module = createWithRemoteLoader({
     }), {
         name: "options", title: "操作", type: "options", fixed: "right", valueOf: (item) => [{
             children: '生成', disabled: !!item.disabledAt, onClick: () => {
-                formModal({
+                const formModalApi = formModal({
                     title: '元素生成', size: 'large', formProps: {
-                        onSubmit: (data) => {
-                            console.log(data);
+                        onSubmit: async (data) => {
+                            const {data: resData} = await ajax(Object.assign({}, apis.element.doGenerate, {
+                                data: Object.assign({}, data, {id: item.id})
+                            }));
+
+                            if (resData.code === 0) {
+                                message.success('元素生成成功');
+                                formModalApi.close();
+                            }
                         }
                     }, children: <Fetch {...Object.assign({}, apis.element.getDetail, {
                         params: {id: item.id}
@@ -211,12 +218,12 @@ const Module = createWithRemoteLoader({
                                 ref.current.reload();
                             }
                         }
-                    }, children: <>
+                    }, children: <Space direction="vertical">
                         <BasicFormInner/>
                         <SubElementFormInner currentId={item.id}/>
                         <ArgsFormInner/>
                         <ApiModelTransformFormInner/>
-                    </>
+                    </Space>
                 });
             }
         }, {
@@ -236,12 +243,12 @@ const Module = createWithRemoteLoader({
                                 ref.current.reload();
                             }
                         }
-                    }, children: <>
+                    }, children: <Space direction="vertical">
                         <BasicFormInner/>
                         <SubElementFormInner/>
                         <ArgsFormInner/>
                         <ApiModelTransformFormInner/>
-                    </>
+                    </Space>
                 });
             }
         }]

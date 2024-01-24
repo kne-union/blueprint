@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Error>
+  <Code>NoSuchKey</Code>
+  <Message>The specified key does not exist.</Message>
+  <RequestId>65B0CC2DEB2057383675D9FE</RequestId>
+  <HostId>uc.dev.fatalent.cn</HostId>
+  <Key>blueprint-tempalte/elements/TestSubElement.tar</Key>
+  <EC>0026-00000001</EC>
+  <RecommendDoc>https://api.aliyun.com/troubleshoot?q=0026-00000001</RecommendDoc>
+</Error>

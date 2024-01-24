@@ -6,7 +6,7 @@ const ArgsFormInner = createWithRemoteLoader({
 })(({remoteModules}) => {
     const [List, formModule] = remoteModules;
     const {Input, Switch} = formModule;
-    return <List column={1} name="args" title="所需参数" list={[<Input name='name' label="参数名" rule="REQ"/>,
+    return <List column={1} name="args" title="所需参数" defaultLength={0} list={[<Input name='name' label="参数名" rule="REQ"/>,
         <Input name='label' label="显示名称" rule="REQ"/>, <Switch name="required" label="是否必须" defaultValue={true}/>]}/>
 });
 

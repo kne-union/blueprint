@@ -9,7 +9,7 @@ const ApiModelTransformFormInner = createWithRemoteLoader({
     const {Input, AdvancedSelect} = formModule;
 
     const {apis} = usePreset();
-    return <List column={1} title="依赖接口" name="apis" list={[<Input name="name" label="接口名" rule="REQ LEN-0-50"/>,
+    return <List column={1} title="依赖接口" name="apis" defaultLength={0} list={[<Input name="name" label="接口名" rule="REQ LEN-0-50"/>,
         <Input name="path" label="调用路径" rule="REQ LEN-0-50"/>,
         <AdvancedSelect name="model" label="数据模型" single extra={({context, close}) => {
             return <AddModelButton type="link" onClick={() => {

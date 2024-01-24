@@ -1,10 +1,9 @@
 const path = require("path");
 const {Op} = require("sequelize");
 const request = require('request');
-const archiver = require('archiver');
-const fs = require('fs');
+const decompress = require('decompress');
+const fs = require('fs-extra');
 const tmp = require('tmp');
-const pify = require('pify');
 const transform = require('lodash/transform');
 const merge = require('lodash/merge');
 const lodash = require('lodash');
@@ -33,10 +32,23 @@ module.exports = {
             result[value.name] = value.args;
         }, {}), args);
 
+        const currentName = element.name;
 
         //1. 创建临时目录
-        const [tmpdir, cleanup] = await pify(tmp.dir)({unsafeCleanup: true});
+        const {tmpdir, cleanup} = await new Promise((resolve, reject) => {
+            tmp.dir({unsafeCleanup: true}, (err, dir, callback) => {
+                if (err) {
+                    reject(err);
+                    return;
+                }
 
+                resolve({tmpdir: dir, cleanup: callback});
+
+            });
+        });
+
+        const downloadPath = path.join(tmpdir, 'download');
+        await fs.ensureDir(downloadPath);
         const generateCore = async (element, targetPath = '') => {
             if (element.subElements && element.subElements.length > 0) {
                 for (let subElement of element.subElements) {
@@ -47,22 +59,39 @@ module.exports = {
             //2. 下载模板文件
             //element.address
             const tempDir = path.join(tmpdir, 'temp', element.name), distDir = path.join(tmpdir, 'dist', targetPath);
-            const output = fs.createWriteStream(tempDir);
-            await request.get(element.address).pipe(archiver('tar')).pipe(output);
+            const tempPackage = path.join(downloadPath, `${element.id}.tar`);
+            await new Promise((resolve, reject) => {
+                const stream = request.get(element.address).pipe(fs.createWriteStream(tempPackage));
+                stream.on('close', () => {
+                    resolve();
+                });
+                stream.on('error', (err) => {
+                    reject(err);
+                });
+            });
+
+            await fs.emptyDir(tempDir);
+
+            await decompress(tempPackage, tempDir);
 
             //3. 执行模板编译
             // targetArgs
             await applyTemplate(tempDir, distDir, {
-                args: targetArgs[element.name], subElements: element.subElements, libs: {
+                args: targetArgs[element.name], elements: transform(element.subElements, (result, value) => {
+                    result[value.name] = Object.assign({}, value, {
+                        path: [`@blueprint/elements`, currentName, targetPath, `${value.name}`].filter((dir) => !!dir).join('/')
+                    });
+                }, {}), libs: {
                     lodash
                 }
             });
+
         };
 
         await generateCore(element);
 
         //4. 取回编译文件，放置到输出目录
-        await req.app.config.outputFiles(path.join(tmpdir, 'dist'));
+        await req.app.config.outputFiles(path.join(tmpdir, 'dist'), path.join('elements', currentName));
 
         try {
             cleanup();

@@ -22,6 +22,10 @@ const getDetail = {
     url: '/blueprint-api/elements/get', method: 'GET'
 };
 
-const apis = {doAdd, doEdit, doDelete, doRestore, getDetail, getList};
+const doGenerate = {
+    url: '/blueprint-api/elements/generate', method: 'POST'
+};
+
+const apis = {doAdd, doEdit, doDelete, doRestore, getDetail, getList, doGenerate};
 
 export default apis;

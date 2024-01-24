@@ -5,7 +5,7 @@ const getColumns = ({showDetail}) => [{
 }, {
     name: "label", title: "显示名称", type: "mainInfo", onClick: showDetail
 }, {
-    name: "address", title: "地址", type: "other"
+    name: "address", title: "地址", type: "other", ellipsis: true
 }, {
     name: 'status', title: "状态", type: 'singleRow', valueOf: (item) => !item.disabledAt ? '启用' : '禁用'
 }, {
